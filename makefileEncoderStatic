@@ -1,0 +1,17 @@
+encoder: encoder.o libEncoding.a
+	gcc -o encoder encoder.o -L. -lEncoding
+
+encoder.o: encoder.c
+	gcc -c encoder.c -std=c99
+
+libEncoding.a: StringFunctions.o EncodingAndDecoding.o
+	ar cr libEncoding.a StringFunctions.o EncodingAndDecoding.o
+
+StringFunctions.o:
+	gcc -c StringFunctions.c -std=c99
+
+EncodingAndDecoding.o:
+	gcc -c EncodingAndDecoding.c -std=c99
+	
+clean:
+	rm -f *.o *.a encoder

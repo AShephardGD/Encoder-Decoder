@@ -1,0 +1,17 @@
+decoder: decoder.o libDecoding.a
+	gcc -o decoder decoder.o -L. -lDecoding
+
+decoder.o: decoder.c
+	gcc -c decoder.c -std=c99
+
+libDecoding.a: StringFunctions.o EncodingAndDecoding.o
+	ar cr libDecoding.a StringFunctions.o EncodingAndDecoding.o
+
+StringFunctions.o:
+	gcc -c StringFunctions.c -std=c99
+
+EncodingAndDecoding.o:
+	gcc -c EncodingAndDecoding.c -std=c99
+
+clean:
+	rm -f *.o *.a decoder
