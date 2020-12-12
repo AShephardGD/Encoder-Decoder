@@ -75,31 +75,28 @@ char* immutableClearSpace(const char* str) {
 
 void mutableStrip(char* str) {
 	int strStart, strEnd;
-	for (int i = 0; 1 == 1; ++i) {
+	int i = 0;
+	while (true) {
 		if (str[i] != ' ') {
 			strStart = i;
 			break;
 		}
+		++i;
 	}
-	if (str[strStart] == '\0') {
-		str[0] = str[strStart];
-		return;
-	}
-	for (int i = 0; 1 == 1; ++i) {
+	while (true) {
+		str[i - strStart] = str[i];
 		if (str[i] == '\0') {
-			strEnd = i;
+			--i;
 			break;
 		}
+		++i;
 	}
-	--strEnd;
-	for (int i = strEnd; 1 == 1; --i) {
+	while (true) {
 		if (str[i] != ' ') {
 			strEnd = i;
 			break;
 		}
-	}
-	for (int i = 0; i < strEnd - strStart + 1; ++i) {
-		str[i] = str[i + strStart];
+		--i;
 	}
 	str[strEnd - strStart + 1] = '\0';
 }
@@ -110,9 +107,10 @@ char* immutableStrip(const char* str) {
 	return destptr;
 }
 
-int stringToInteger(const char* str) {
-	assert(isNumber(str));
-	int j = 0, result = 0;
+long long stringToInteger(const char* str) {
+	assert(isInteger(str));
+	int j = 0;
+	long long result = 0;
 	if (str[0] == '-') {
 		++j;
 	}
@@ -126,14 +124,38 @@ int stringToInteger(const char* str) {
 	return result;
 }
 
-bool isNumber(const char* str) {
+bool isInteger(const char* str) {
+	int i = 0;
+	if (str[i] == '-') {
+		++i;
+	}
+	if (str[i] == '\0') {
+		return false;
+	}
+	while (str[i] != '\0') {
+		if ((str[i] < '0') || (str[i] > '9')) {
+			return false;
+		}
+		++i;
+	}
+	return true;
+}
+
+bool isFloating(const char* str) {
+	bool point = false;
 	int i = 0;
 	if (str[i] == '-') {
 		++i;
 	}
 	while (str[i] != '\0') {
-		if ((str[i] < '0') || (str[i] > '9')) {
+		if (((str[i] < '0') || (str[i] > '9')) && (str[i] != '.')) {
 			return false;
+		}
+		if ((str[i] == '.') && point) {
+			return false;
+		}
+		else if (str[i] == '.') {
+			point = true;
 		}
 		++i;
 	}

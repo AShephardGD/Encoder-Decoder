@@ -13,9 +13,10 @@ void mutableClearSpace(char* str);
 char* immutableClearSpace(const char* str);
 void mutableStrip(char* str);
 char* immutableStrip(const char* str);
-bool isNumber(const char* str);
+bool isInteger(const char* str);
+bool isFloating(const char* str);
 bool isLetters(const char* str);
 char* stringCopy(const char* str);
-int stringToInteger(const char* str);
+long long stringToInteger(const char* str);
 
 #endif

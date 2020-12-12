@@ -1,11 +1,9 @@
 #include<stdio.h>
 #include<stdbool.h>
 #include<malloc.h>
+#include<string.h>
 #include"StringFunctions.h"
 #include"EncodingAndDecoding.h"
-
-static const char ErrorInput[] = "Некорректные данные";
-static const int StringSize = 100;
 
 void printCaesar(const char* text, const int n) {
 	char* result = immutableDecodeCaesar(text, n);
@@ -25,65 +23,77 @@ void printXOR(const char* text, const char* code) {
 	free(result);
 }
 
-int main(int agrc, char* argv[]) {
-	const char caesar[] = "--caesar", xor[] = "--xor";
-	char* text;
-	char* command;
-	char* arguement;
-	int coder = 1, i = -1;
+char* inputString() {
+	int size = 32, len = 0;
+	char* str = (char*) malloc(sizeof(char) * size);
+	if (!str) {
+		return str;
+	}
+	char c;
+	scanf("%c", &c);
+	while (c != '\n') {
+		str[len++] = c;
+		scanf("%c", &c);
+		if (len == size) {
+			str = realloc(str, sizeof(char) * (size += 16));
+			if (!str) {
+				return str;
+			}
+		}
+	}
+	str[len++] = '\0';
+	return realloc(str, sizeof(char) * len);
+}
+
+bool checkInput(const int agrc, char* argv[], char** input) {
 	if ((agrc != 4) && (agrc != 1)) {
+		return false;
+	}
+	else if (agrc == 4) {
+		input[0] = stringCopy(argv[1]);
+		input[1] = stringCopy(argv[2]);
+		input[2] = stringCopy(argv[3]);
+	}
+	else {
+		printf("Введите команду: ");
+		input[0] = inputString();
+		printf("Введите текст: ");
+		input[1] = inputString();
+		printf("Введите ключевое слово: ");
+		input[2] = inputString();
+		printf("\n");
+	}
+	return true;
+}
+		
+
+int main(int agrc, char* argv[]) {
+	const char CaesarString[] = "--caesar", XORString[] = "--xor", ErrorInput[] = "Некорректные данные";
+	char** input = (char**) malloc(sizeof(char*) * 3);
+	if (!checkInput(agrc, argv, input)) {
 		printf("%s\n", ErrorInput);
 		return 0;
 	}
-	else if (agrc == 4) {
-		command = stringCopy(argv[1]);
-		text = stringCopy(argv[2]);
-		arguement = stringCopy(argv[3]);
-	}
-	else {
-		char arrayText[StringSize], arrayCommand[StringSize], arrayArguement[StringSize];
-		printf("Введите команду: ");
-		scanf("%s", &arrayCommand);
-		printf("Введите текст: ");
-		scanf("%s", &arrayText);
-		printf("Введите ключевое слово: ");
-		scanf("%s", &arrayArguement);
-		printf("\n");
-		command = stringCopy(arrayCommand);
-		text = stringCopy(arrayText);
-		arguement = stringCopy(arrayArguement);
-	}
+	char* command = input[0];
+	char* text = input[1];
+	char* arguement = input[2];
+	int i = -1;
 	mutableToLower(text);
 	mutableStrip(text);
-	do {
-		++i;
-		if (command[i] != caesar[i]) {
-			coder = 2;
-			break;
-		}
-	} while (caesar[i] != '\0');
-	if (coder == 2) {
-		i = 0;
-		do {
-			++i;
-			if (command[i] != xor[i]) {
-				coder = 0;
-				printf("%s\n", ErrorInput);
-				return 0;
-			}
-		} while (xor[i] != '\0');
-	}
-	if (coder == 1) {
-		if (!isNumber(arguement)) {
+	if (!strcmp(command, CaesarString)) {
+		if (!isInteger(arguement)) {
 			printf("%s\n", ErrorInput);
 			return 0;
 		}
-		int n = stringToInteger(arguement);
-		printCaesar(text, n);
+		printCaesar(text, stringToInteger(arguement));
 	}
-	else {
+	else if (!strcmp(command, XORString)) {
 		printXOR(text, arguement);
 	}
+	else {
+		printf("%s\n", ErrorInput);
+	}
+	free(input);
 	free(text);
 	free(command);
 	free(arguement);
