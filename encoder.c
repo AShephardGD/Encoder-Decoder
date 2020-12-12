@@ -70,8 +70,7 @@ int main(int agrc, char* argv[]) {
 	const char CaesarString[] = "--caesar", XORString[] = "--xor", ErrorInput[] = "Некорректные данные";
 	char** input = (char**) malloc(sizeof(char*) * 3);
 	int i = -1;
-	bool isInput = checkInput(agrc, argv, input);
-	if (!isInput) {
+	if (!checkInput(agrc, argv, input)) {
 		printf("%s\n", ErrorInput);
 		return 0;
 	}
