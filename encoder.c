@@ -45,35 +45,53 @@ char* inputString() {
 	return realloc(str, sizeof(char) * len);
 }
 
-bool checkInput(const int agrc, char* argv[], char** input) {
+bool isInput(const int agrc) {
 	if ((agrc != 4) && (agrc != 1)) {
 		return false;
 	}
-	else if (agrc == 4) {
-		input[0] = stringCopy(argv[1]);
-		input[1] = stringCopy(argv[2]);
-		input[2] = stringCopy(argv[3]);
+	else {
+		return true;
+	}
+}
+
+bool isCommandLineInput(const int agrc) {
+	if (agrc == 4) {
+		return true;
 	}
 	else {
-		printf("Введите команду: ");
-		input[0] = inputString();
-		printf("Введите текст: ");
-		input[1] = inputString();
-		printf("Введите ключевое слово: ");
-		input[2] = inputString();
-		printf("\n");
+		return false;
 	}
-	return true;
+}
+
+void commandLineInput(char* argv[], char** input) {
+	input[0] = stringCopy(argv[1]);
+	input[1] = stringCopy(argv[2]);
+	input[2] = stringCopy(argv[3]);
+}
+
+void userInput(char** input){
+	printf("Введите команду: ");
+	input[0] = inputString();
+	printf("Введите текст: ");
+	input[1] = inputString();
+	printf("Введите ключевое слово: ");
+	input[2] = inputString();
+	printf("\n");
 }
 
 int main(int agrc, char* argv[]) {
 	const char caesarString[] = "--caesar", XORString[] = "--xor", errorInput[] = "Некорректные данные";
 	char** input = (char**) malloc(sizeof(char*) * 3);
 	int i = -1;
-	bool isInput = checkInput(agrc, argv, input);
-	if (!isInput) {
+	if (!isInput(agrc)) {
 		printf("%s\n", errorInput);
 		return 0;
+	}
+	else if (isCommandLineInput(agrc)) {
+		commandLineInput(argv, input);
+	}
+	else {
+		userInput(input);
 	}
 	char* command = input[0];
 	char* text = input[1];
