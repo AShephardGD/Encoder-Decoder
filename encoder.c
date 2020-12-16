@@ -67,11 +67,12 @@ bool checkInput(const int agrc, char* argv[], char** input) {
 }
 
 int main(int agrc, char* argv[]) {
-	const char CaesarString[] = "--caesar", XORString[] = "--xor", ErrorInput[] = "Некорректные данные";
+	const char caesarString[] = "--caesar", XORString[] = "--xor", errorInput[] = "Некорректные данные";
 	char** input = (char**) malloc(sizeof(char*) * 3);
 	int i = -1;
-	if (!checkInput(agrc, argv, input)) {
-		printf("%s\n", ErrorInput);
+	bool isInput = checkInput(agrc, argv, input);
+	if (!isInput) {
+		printf("%s\n", errorInput);
 		return 0;
 	}
 	char* command = input[0];
@@ -79,9 +80,9 @@ int main(int agrc, char* argv[]) {
 	char* arguement = input[2];
 	mutableToLower(text);
 	mutableStrip(text);
-	if (!strcmp(command, CaesarString)) {
+	if (!strcmp(command, caesarString)) {
 		if (!isInteger(arguement)) {
-			printf("%s\n", ErrorInput);
+			printf("%s\n", errorInput);
 			return 0;
 		}
 		printCaesar(text, stringToInteger(arguement));
@@ -90,7 +91,7 @@ int main(int agrc, char* argv[]) {
 		printXOR(text, arguement);
 	}
 	else {
-		printf("%s\n", ErrorInput);
+		printf("%s\n", errorInput);
 	}
 	free(input);
 	free(text);
