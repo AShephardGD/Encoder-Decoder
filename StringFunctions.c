@@ -76,28 +76,19 @@ char* immutableClearSpace(const char* str) {
 void mutableStrip(char* str) {
 	int strStart, strEnd;
 	int i = 0;
-	while (true) {
-		if (str[i] != ' ') {
-			strStart = i;
-			break;
-		}
+	while (str[i] == ' ') {
 		++i;
 	}
-	while (true) {
+	strStart = i;
+	while (str[i] != '\0') {
 		str[i - strStart] = str[i];
-		if (str[i] == '\0') {
-			--i;
-			break;
-		}
 		++i;
 	}
-	while (true) {
-		if (str[i] != ' ') {
-			strEnd = i;
-			break;
-		}
+	--i;
+	while (str[i] == ' ') {
 		--i;
 	}
+	strEnd = i;
 	str[strEnd - strStart + 1] = '\0';
 }
 
@@ -180,43 +171,3 @@ char* stringCopy(const char* str) {
 	strcpy(destptr, str);
 	return destptr;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
